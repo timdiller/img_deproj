@@ -113,68 +113,70 @@ class ChacoProj(HasTraits):
     view1 = View(
         Group(
             Group(
-                Item('L_container',
-                     editor = ComponentEditor(),
-                     width = 400,
-                     show_label = False),
                 Group(
-                    Item(name = 'trim_xmin',label = 'min'),
-                    Item(name = 'trim_xmax',label = 'max'),
-                    orientation = "horizontal",
-                    label = 'X Clipping'),
+                    Item('L_container',
+                         editor = ComponentEditor(),
+                         width = 400,
+                         show_label = False),
+                    Group(
+                        Item(name = 'trim_xmin',label = 'min'),
+                        Item(name = 'trim_xmax',label = 'max'),
+                        orientation = "horizontal",
+                        label = 'X Clipping'),
+                    Group(
+                        Item(name = 'trim_ymin',label = 'min'),
+                        Item(name = 'trim_ymax',label = 'max'),
+                        orientation = "horizontal",
+                        label = 'Y Clipping'),
+                    Group(
+                        Item(name='shift_x',label='X'),
+                        Item(name='shift_y',label='Y'),
+                        label = "Offset",
+                        orientation = "horizontal"),
+                    Group(
+                        Item(name = 'inv'),
+                        Item(name = 'theta'),
+                        Item('units',label = 'Units'),
+                        orientation = "horizontal"),
+                    orientation="vertical",label='Raw Data'),#Raw Data grouping
                 Group(
-                    Item(name = 'trim_ymin',label = 'min'),
-                    Item(name = 'trim_ymax',label = 'max'),
-                    orientation = "horizontal",
-                    label = 'Y Clipping'),
-                Group(
-                    Item(name='shift_x',label='X'),
-                    Item(name='shift_y',label='Y'),
-                    label = "Offset",
-                    orientation = "horizontal"),
-                Group(
-                    Item(name = 'inv'),
-                    Item(name = 'theta'),
-                    Item('units',label = 'Units'),
-                    orientation = "horizontal"),
-                Item(name = 'data_file'),
-                orientation="vertical",label='Raw Data'),#Raw Data grouping
+                    Item('figure',
+                         editor = MPLFigureEditor(),
+                         width = 400,
+                         height = 400,
+                         show_label = False),
+                    Group(
+                        Item(name='keyst_x'),
+                        Item(name='keyst_y'),
+                        orientation = "horizontal"),
+                    Group(
+                        Item(name='scale_x'),
+                        Item(name='scale_y'),
+                        orientation = "horizontal"),
+                    Group(
+                        Group(
+                            Item(name = 'ax_xmin',label = 'x-',format_str="%.1f"),
+                            Item(name = 'ax_xmax',label = 'x+',format_str="%.1f"),
+                            orientation = "vertical"),
+                        Group(
+                            Item(name = 'ax_ymin',label = 'y-',format_str="%.1f"),
+                            Item(name = 'ax_ymax',label = 'y+',format_str="%.1f"),
+                            orientation = "vertical"),
+                        orientation = "horizontal",
+                        label = 'Axis'),
+                    orientation="vertical",
+                    label='Final Data'),
+                orientation="horizontal"),
             Group(
-                Item('figure',
-                     editor = MPLFigureEditor(),
-                     width = 400,
-                     height = 400,
+                Item(name = 'data_file'),
+                Item('load_button',
+                     label = 'Load',
                      show_label = False),
-                Group(
-                    Item(name='keyst_x'),
-                    Item(name='keyst_y'),
-                    orientation = "horizontal"),
-                Group(
-                    Item(name='scale_x'),
-                    Item(name='scale_y'),
-                    orientation = "horizontal"),
-                Group(
-                    Group(
-                        Item(name = 'ax_xmin',label = 'x-',format_str="%.1f"),
-                        Item(name = 'ax_xmax',label = 'x+',format_str="%.1f"),
-                        orientation = "vertical"),
-                    Group(
-                        Item(name = 'ax_ymin',label = 'y-',format_str="%.1f"),
-                        Item(name = 'ax_ymax',label = 'y+',format_str="%.1f"),
-                        orientation = "vertical"),
-                    orientation = "horizontal",
-                    label = 'Axis'),
-                Group(
-                    Item('load_button',
-                         label = 'Load',
-                         show_label = False),
-                    Item('recalc_button',
-                         label = 'Recalculate',
-                         show_label = False),
-                    orientation = "horizontal"),
-                orientation="vertical",
-                label='Final Data'),
-            orientation="horizontal"),
+                Item('recalc_button',
+                     label = 'Recalculate',
+                     show_label = False),
+                orientation = "horizontal"),
+            orientation = "vertical"),
         title = "Deprojection Tool",
         buttons = [OKButton])
 
