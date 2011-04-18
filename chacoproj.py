@@ -94,10 +94,10 @@ class ChacoProj(HasTraits):
     trim_xmax = Int(10,desc = 'pixel position of right edge of raw image')
     trim_ymin = Int(0, desc = 'pixel position of bottom edge of raw image')
     trim_ymax = Int(10,desc = 'pixel position of top edge of raw image')
-    shift_x = Int(0,desc = 'pixels')
-    shift_y = Int(0,desc = 'pixels')
-    keyst_x = Float(0.)
-    keyst_y = Float(-0.01)
+    shift_x = Float(0,desc = 'location of center in raw data units')
+    shift_y = Float(0,desc = 'location of image bottom in raw data units')
+    keyst_x = Float(0.0, desc = ' typical value is 0')
+    keyst_y = Float(0.0, desc = 'keystone correction. typical value is -0.01')
     scale_x = Float(1.)
     scale_y = Float(1.)
     ax_xmin = Float(-150.)
@@ -191,7 +191,7 @@ class ChacoProj(HasTraits):
         self.shift_x = int(np.mean(self.x_raw[0]))
         #self.shift_y = int(-1*max(np.ceil(self.y_raw[:,0])))
 
-        self.pd.set_data('z_raw',self.z_raw)
+        self.pd.set_data('z_raw',self.z_clip)
 
     def __init__(self):
         """
@@ -207,7 +207,7 @@ class ChacoProj(HasTraits):
         ## self.pd.set_data('z_trans',self.z_trans)
 
         x = np.linspace(-np.pi,np.pi,100)
-        y = np.linspace(-np.pi,np.pi,100)
+        y = np.linspace(-np.pi/2.,3.*np.pi/2.,100)
         [X,Y] = np.meshgrid(x,y)
         self.z_raw = np.sin(X)*np.cos(Y)
         self.x_raw = X
@@ -221,8 +221,8 @@ class ChacoProj(HasTraits):
         lplot = Plot(self.pd)
         lplot.contour_plot(
             'z_raw',
-            x = self.x_raw,
-            y = self.y_raw,
+            xbounds = (min(self.x_raw[0]),  max(self.x_raw[0])),
+            ybounds = (min(self.y_raw[:,0]),max(self.y_raw[:,0])),
             name="left_plot",
             type="poly",
             levels=128)
@@ -250,11 +250,11 @@ class ChacoProj(HasTraits):
 
         if self.inv:
             inv = (1-2*self.inv)
-            if inv*self.shift_y < self.trim_ymax:
-                self.shift_y = inv*self.trim_ymax
+            if inv*self.shift_y < max(self.y_clip[:,0]):
+                self.shift_y = inv*max(self.y_clip[:,0])
         else:
-            if self.shift_y > self.trim_ymin:
-                self.shift_y = self.trim_ymin
+            if self.shift_y >  min(self.y_clip[:,0]):
+                self.shift_y = min(self.y_clip[:,0])
 
     def calc_dimensions(self):
         """
