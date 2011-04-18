@@ -253,8 +253,8 @@ class ChacoProj(HasTraits):
             if inv*self.shift_y < max(self.y_clip[:,0]):
                 self.shift_y = inv*max(self.y_clip[:,0])
         else:
-            if self.shift_y >  min(self.y_clip[:,0]):
-                self.shift_y = min(self.y_clip[:,0])
+            #if self.shift_y >  min(self.y_clip[:,0]):
+            self.shift_y = min(self.y_clip[:,0])
 
     def calc_dimensions(self):
         """
