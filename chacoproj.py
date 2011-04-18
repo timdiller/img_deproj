@@ -17,6 +17,15 @@ from enthought.traits.ui.wx.editor import Editor
 from enthought.traits.ui.wx.basic_editor_factory import BasicEditorFactory
 
 class _MPLFigureEditor(Editor):
+    """
+    MPLFigureEditor is an Editor object that allows the use of
+    matplotlib figures in a Traits UI environment.
+    In this case, it is necessary because the matplotlib contour()
+    function handles missing data and plots xyz data in a way that
+    causes problems for the Chaco contour plotting function.
+    Code was copied in February 2011 from
+    from http://github.enthought.com/traits/tutorials/traits_ui_scientific_app.html
+    """
     scrollable  = True
 
     def init(self, parent):
@@ -70,7 +79,7 @@ class ChacoProj(HasTraits):
          -bring projective calcs into this class
         v0.6
          -add file open
-         -add plot to preview to show display quadrilateral
+         -add plot to preview to show display quadrilaterals
     """
     ## UI elements
     inv = Bool(True)
