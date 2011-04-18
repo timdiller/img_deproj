@@ -80,6 +80,10 @@ class ChacoProj(HasTraits):
         v0.6
          -add file open
          -add plot to preview to show display quadrilaterals
+
+    figure = Instance(Figure,()) behaves similarly to figure=figure()
+    would in matplotlib. Thus figure is a handle to the figure object
+    embedded in the Traits UI.
     """
     ## UI elements
     inv = Bool(True)
@@ -194,6 +198,9 @@ class ChacoProj(HasTraits):
         need to change this to offer a load dialog on startup. for
         development and debugging, just load the data from an npz
         save file.
+
+        axes are added to the figure here under the handle self.axes.
+        
         """
         ## npz=np.load('savefile.npz')
         ## self.z_raw  = npz[npz.files[0]]
@@ -316,7 +323,7 @@ class ChacoProj(HasTraits):
         self.y_trans = np.resize(y2,self.y_clip.shape)
         self.z_trans = self.z_clip + offset[self.units]
 
-        print offset[self.units]
+        #print offset[self.units]
 
         del x2,y2#,z2
 
@@ -331,6 +338,10 @@ class ChacoProj(HasTraits):
         matplotlib contour() plots the lines, and contourf() fills
         in between the lines, so calls to both are necessary to get
         a solid image.
+
+        self.figure is the handle to the figure object
+        self.axes is the handle to the axes
+        Both of these are set up in the __init__() function.
         """
         self.axes.cla()
         c1=self.axes.contourf(self.x_trans,
@@ -347,12 +358,17 @@ class ChacoProj(HasTraits):
         self.axes.set_xlim((self.ax_xmin,self.ax_xmax))
         self.axes.set_ylim((self.ax_ymin,self.ax_ymax))
 
+        #Update the color bar. Check first whether it's been
+        #instantiated yet.
         try:
-            self.cb.update_normal(c1)
+            self.cb.ax.cla()
+            self.cb = self.figure.colorbar(c1,self.cb.ax)
         except AttributeError:
             self.cb = self.figure.colorbar(c1)
-            self.cb.set_label(r'Temperature ($ ^{\circ} $C)')
-            
+
+        unitstring={'K':'(K)','C':'($ ^{\circ} $C)'}
+   
+        self.cb.set_label(r'Temperature %s' %(unitstring[self.units]))
         self.figure.canvas.draw()
 
     def start(self):
