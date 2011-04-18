@@ -323,6 +323,15 @@ class ChacoProj(HasTraits):
 #        savez('tempsave.npz',x=x,y=y,z=z,x_t=x_t,y_t=y_t,T=self.T)
 
     def replot(self):
+        """
+        Any time there is an update to the transformed data, update
+        the contour plot in the right-hand container.
+        This function refers solely to data stored in the ChacoProj
+        class.
+        matplotlib contour() plots the lines, and contourf() fills
+        in between the lines, so calls to both are necessary to get
+        a solid image.
+        """
         self.axes.cla()
         c1=self.axes.contourf(self.x_trans,
                               self.y_trans,
