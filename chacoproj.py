@@ -189,7 +189,7 @@ class ChacoProj(HasTraits):
         self.clip_data()
         self.recalc()
         self.shift_x = int(np.mean(self.x_raw[0]))
-        self.shift_y = int(-1*max(self.y_raw[:,0]))
+        #self.shift_y = int(-1*max(np.ceil(self.y_raw[:,0])))
 
         self.pd.set_data('z_raw',self.z_raw)
 
@@ -236,7 +236,9 @@ class ChacoProj(HasTraits):
 
     def clip_data(self):
         """
-        Take the raw data, invert and rotate. Then clip it to size.
+        Take the raw data and clip it to size.
+        Check for offset errors. Negative y coordinates cause divide
+        by zero errors.
         """
         #from matplotlib.mlab import griddata
         self.x_clip = self.x_raw[self.trim_ymin:self.trim_ymax,
@@ -245,6 +247,14 @@ class ChacoProj(HasTraits):
                                  self.trim_xmin:self.trim_xmax]
         self.z_clip = self.z_raw[self.trim_ymin:self.trim_ymax,
                                  self.trim_xmin:self.trim_xmax]
+
+        if self.inv:
+            inv = (1-2*self.inv)
+            if inv*self.shift_y < self.trim_ymax:
+                self.shift_y = inv*self.trim_ymax
+        else:
+            if self.shift_y > self.trim_ymin:
+                self.shift_y = self.trim_ymin
 
     def calc_dimensions(self):
         """
@@ -263,6 +273,12 @@ class ChacoProj(HasTraits):
 
         self.x_raw = x
         self.y_raw = y
+
+    def _inv_changed(self):
+        if self.inv:
+            self.shift_y = -1*self.trim_ymax
+        else:
+            self.shift_y = self.trim_ymin
 
     def _load_button_fired(self):
         f=open(self.data_file)
