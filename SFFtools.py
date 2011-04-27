@@ -1,8 +1,55 @@
+def loadfluentxy(filename=''):
+    """
+    data = loadfluentxy(filename='')
+    
+    Tor loading data from Fluent solution export, which is tab
+    delimited and has 1 header line. The columns follow a general form
+    in which the first three columns are node number and x- and y-
+    coordinates. The value of the exported variable(s) follow in the
+    subsequent column(s). In the present implementation, import of
+    only one column is supported.
+    The names of the data columns are contained in the data structure
+    returned:
+    data.dtype.names
+    returns a list of the vairiables available
+    """
+    
+    import numpy as np
+    from datetime import datetime
+    from StringIO import StringIO
+    import Tkinter
+    from tkFileDialog import askopenfilename
+    import progressbar as pb
+
+    if (filename):
+        print "Opening %s..." %(filename)
+    else:
+        root = Tkinter.Tk()
+        root.withdraw()
+        filename=askopenfilename(parent=root,title='Open File')
+        root.destroy()
+        root.mainloop()
+
+    if (filename):
+        f=open(filename)
+        d = np.genfromtxt(f, delimiter = ',', unpack = True, names = True)
+        print "Found the following columns:"
+        print d.dtype.names
+        f.close()
+        return d
+
 def loadROIfile(filename=''):
-    """data = loadROIfile(filename='')
-    for loading data from FLIR ExaminIR, which is tab delimited, has 1 header line
-    this function does not return names, only data
-"""
+    """
+    data = loadROIfile(filename='')
+    for loading data from FLIR ExaminIR, which is tab delimited, and
+    has 1 header line with vairable names
+    the names of the data columns are contained in the data structure
+    time is assumed to be in the second column and is parse
+    returned:
+    data.dtype.names
+    returns a list of the vairiables available
+    """
+
     import numpy as np
     from datetime import datetime
     from StringIO import StringIO
@@ -35,6 +82,7 @@ def loadROIfile(filename=''):
             time[i] =  1e-4*t.microsecond + 60*t.minute + 3600*t.hour + 24*3600*t.day - t0
             pbar.update(100.*float(i)/len_d)
         pbar.finish()
+        f.close()
         return d,time
 
 def loadxy(filename=''):
