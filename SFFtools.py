@@ -1,17 +1,22 @@
+"""
+Routines used to import and manipulate data from sources used in
+the solid freeform fabrication (SFF) projects of the Laboratory for
+Freefrom Fabrication at the University of Texas at Austin. These
+include Fluent 12, FLIR ExaminIR, and MS Excel.
+"""
+
 def loadfluentxy(filename=''):
     """
-    data = loadfluentxy(filename='')
+    Return an ndarray from a fluent solution text file.
     
-    Tor loading data from Fluent solution export, which is tab
+    For loading data from Fluent solution export, which is tab
     delimited and has 1 header line. The columns follow a general form
     in which the first three columns are node number and x- and y-
     coordinates. The value of the exported variable(s) follow in the
-    subsequent column(s). In the present implementation, import of
-    only one column is supported.
-    The names of the data columns are contained in the data structure
-    returned:
-    data.dtype.names
-    returns a list of the vairiables available
+    subsequent column(s).
+
+    If a file name is not supplied, a Tkinter file open dialog will
+    allow browsing and selection of the file to open.
     """
     
     import numpy as np
@@ -40,14 +45,18 @@ def loadfluentxy(filename=''):
 
 def loadROIfile(filename=''):
     """
-    data = loadROIfile(filename='')
-    for loading data from FLIR ExaminIR, which is tab delimited, and
-    has 1 header line with vairable names
-    the names of the data columns are contained in the data structure
-    time is assumed to be in the second column and is parse
-    returned:
-    data.dtype.names
-    returns a list of the vairiables available
+    Return data and time arrays from a FLIR ExaminIR output data file.
+
+    Data from FLIR ExaminIR is tab delimited, and has 1 header line
+    with variable names. The names of the data columns are contained
+    in the data structure.
+    Time is assumed to be in the second column and is parsed to micro-
+    second resolution.
+
+    If a file name is not supplied, a Tkinter file-open dialog will
+    allow browsing and selection of the file to open.
+
+    Note, this function uses the progressbar module.
     """
 
     import numpy as np
