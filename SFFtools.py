@@ -5,7 +5,7 @@ Freefrom Fabrication at the University of Texas at Austin. These
 include Fluent 12, FLIR ExaminIR, and MS Excel.
 """
 
-def loadfluentxy(filename=''):
+def loadfluentxy(filename=None):
     """
     Return an ndarray from a fluent solution text file.
     
@@ -17,6 +17,7 @@ def loadfluentxy(filename=''):
 
     If a file name is not supplied, a Tkinter file open dialog will
     allow browsing and selection of the file to open.
+    
     """
     
     import numpy as np
@@ -26,24 +27,20 @@ def loadfluentxy(filename=''):
     from tkFileDialog import askopenfilename
     import progressbar as pb
 
-    if (filename):
-        print "Opening %s..." %(filename)
-    else:
+    if filename is None:
         root = Tkinter.Tk()
         root.withdraw()
-        filename=askopenfilename(parent=root,title='Open File')
+        filename = askopenfilename(parent=root, title='Open File')
         root.destroy()
         root.mainloop()
 
-    if (filename):
-        f=open(filename)
-        d = np.genfromtxt(f, delimiter = ',', unpack = True, names = True)
-        print "Found the following columns:"
-        print d.dtype.names
+    if filename is not None:
+        f = open(filename)
+        d = np.genfromtxt(f, delimiter=',', unpack = True, names = True)
         f.close()
         return d
 
-def loadROIfile(filename=''):
+def loadROIfile(filename=None):
     """
     Return data and time arrays from a FLIR ExaminIR output data file.
 
@@ -57,55 +54,59 @@ def loadROIfile(filename=''):
     allow browsing and selection of the file to open.
 
     Note, this function uses the progressbar module.
+    
     """
 
     import numpy as np
     from datetime import datetime
     from StringIO import StringIO
+
     import Tkinter
     from tkFileDialog import askopenfilename
     import progressbar as pb
-#    from matplotlib.pyplot import figure,subplot,plot,xlabel,ylabel,title,legend
 
     if (filename):
         print "Opening %s..." %(filename)
     else:
         root = Tkinter.Tk()
         root.withdraw()
-        filename=askopenfilename(parent=root,title='Open File',filetypes=[('text files','*.txt')])
+        filename = askopenfilename(parent=root, title='Open File',
+                                   filetypes=[('text files','*.txt')])
         root.destroy()
         root.mainloop()
 
-    if (filename):
-        f=open(filename)
-        #d = np.genfromtxt(f,delimiter='\t',unpack=True,names=True)
-        d = np.genfromtxt(f,delimiter='\t',unpack=True,names=True,dtype="i8,S25,f8,f8,f8,S8")
-        t = datetime.strptime(d['time'][0],"%Y-%m-%d %H:%M:%f00")
-        time=np.zeros(len(d))
+    if filename is not None:
+        f = open(filename)
+        d = np.genfromtxt(f, delimiter='\t', unpack=True, names=True,
+                          dtype="i8,S25,f8,f8,f8,S8")
+        t = datetime.strptime(d['time'][0], "%Y-%m-%d %H:%M:%f00")
+        time = np.zeros(len(d))
         t0 = 1e-4*t.microsecond + 60*t.minute + 3600*t.hour + 24*3600*t.day
         print "\nParsing time strings...\n"
-        pbar=pb.ProgressBar().start()
-        len_d=float(len(d))
-        for i in range(1,len(d)):
-            t = datetime.strptime(d['time'][i],"%Y-%m-%d %H:%M:%f00")
-            time[i] =  1e-4*t.microsecond + 60*t.minute + 3600*t.hour + 24*3600*t.day - t0
-            pbar.update(100.*float(i)/len_d)
+        pbar = pb.ProgressBar().start()
+        len_d = float(len(d))
+        for i in range(1, len(d)):
+            t = datetime.strptime(d['time'][i], "%Y-%m-%d %H:%M:%f00")
+            time[i] =  (1e-4 * t.microsecond + 60 * t.minute + 3600 *
+                        t.hour + 24 * 3600 * t.day - t0)
+            pbar.update(100. * float(i) / len_d)
         pbar.finish()
         f.close()
         return d,time
 
-def loadxy(filename=''):
-    """data = loadxy(filename='')
-    for loading x-y data from Fluent, which is tab delimited, has 4 header lines and one footer line
+def loadxy(filename=None):
+    """
+    Loads x-y data from Fluent, which is tab delimited, has 4 header lines and one footer line
     this function does not return names, only data
-"""
+
+    """
+
     import numpy as np
     from StringIO import StringIO
     import Tkinter
     from tkFileDialog import askopenfilename
-#    from matplotlib.pyplot import figure,subplot,plot,xlabel,ylabel,title,legend
 
-    if (filename):
+    if filename is not None:
         print "Opening %s\n" %(filename)
     else:
         root = Tkinter.Tk()
@@ -114,9 +115,10 @@ def loadxy(filename=''):
         root.destroy()
         root.mainloop()
 
-    if (filename):
-        f=open(filename)
-        d = np.genfromtxt(f,delimiter='\t',unpack=True,skip_header=4,skip_footer=1)
+    if filename is not None:
+        f = open(filename)
+        d = np.genfromtxt(f, delimiter='\t', unpack=True,
+                          skip_header=4, skip_footer=1)
         s = argsort(d)
         data = d[:,s[0]]
         return data
@@ -124,23 +126,28 @@ def loadxy(filename=''):
         
 def loadXLcsv():
     """
-    Imports a csv file produced by MS Excel
-    MS Excel files written as .csv have \r at the end of lines instead of the more typical \r\n
-"""
+    Import a csv file produced by MS Excel
+    MS Excel files written as .csv have \r at the end of lines instead
+    of the more typical \r\n.
+
+    """
+
     import numpy as np
     from StringIO import StringIO
+
     import Tkinter
     from tkFileDialog import askopenfilename
-#    from matplotlib.pyplot import figure,subplot,plot,xlabel,ylabel,title,legend
+
 
     root = Tkinter.Tk()
     root.withdraw()
-    filename=askopenfilename(parent=root,title='Open File',filetypes=[('csv files','*.csv')])
+    filename = askopenfilename(parent=root, title='Open File',
+                               filetypes=[('csv files','*.csv')])
     root.destroy()
-    if(filename):
+    if filename is not None:
         f=open(filename)
 
-    if(f):
+    if is not None:
         l = f.read() #because there are no \n's this will read the whole file.
         f.close()
         s = StringIO(l.replace('\r','\n'))#write the string into a virtual file
@@ -151,41 +158,46 @@ def loadXLcsv():
         data = np.genfromtxt(s,delimiter=',',unpack=True)
         return data,names
 
-def loadtcdat(filename=''):
+def loadtcdat(filename= None):
     """
-    loads csv data written by Fluent as part of the output.
+    Load csv data written by Fluent as part of the output.
     These files are specific to 2D simulation runs during the post-doc research of Tim Diller.
     the file is called 'tcdat.csv'
-"""
+
+    """
+
     import numpy as np
     from StringIO import StringIO
     import Tkinter
     from tkFileDialog import askopenfilename
     from matplotlib.pyplot import figure,subplot,plot,xlabel,ylabel,title,legend
 
-    if (filename):
+    if filename is not None:
         print "Opening %s\n" %(filename)
     else:
         root = Tkinter.Tk()
         root.withdraw()
-        filename=askopenfilename(parent=root,title='Open File',filetypes=[('csv files','*.csv'),('txt files', '*.txt')])
+        filename = askopenfilename(parent=root, title='Open File',
+                                   filetypes=[('csv files', '*.csv'),
+                                              ('txt files', '*.txt')])
         root.destroy()
         root.mainloop()
 
-    if (filename):
+    if filename is not None:
         f=open(filename)
-        names = f.readline() #variable names
+        names = f.readline()
         names = names.strip('\r\n')
         names = names.split(",")
         f.close()
 
-        data = np.genfromtxt(filename,delimiter=',',unpack=True,skip_header=2)
+        data = np.genfromtxt(filename, delimiter=',',
+                             unpack=True, skip_header=2)
         time = data[0]
 
         figure()
         subplot(211)
-        plot(time,data[1],label='Feed bin')
-        plot(time,data[2],label='Part bin')
+        plot(time, data[1], label='Feed bin')
+        plot(time, data[2], label='Part bin')
         ylabel(r'$ T_{bin} \left(K\right) $')
         legend(loc='best')
 
@@ -196,17 +208,18 @@ def loadtcdat(filename=''):
         ylabel(r'$ P_{heater} \left( \frac{W}{m^2} \right) $')
         legend(loc='best')
 
-        return (data,time,names)
-    else:
-        return
+        return (data, time, names)
     
-def loadSS2500(filename=''):
+def loadSS2500(filename=None):
     """
     (data,time,names) = loadSS2500()
-    This reads the data file produced by the operating program in the SinterStation2500.
-    It automatically imports the data and plots the part bin surface temperature and
-    part bin heater intensity as a function of time.
-"""
+    This reads the data file produced by the operating program in the
+    SinterStation2500. It automatically imports the data and plots the
+    part bin surface temperature and part bin heater intensity as a
+    function of time.
+
+    """
+
     import numpy as np
     from StringIO import StringIO
     import Tkinter
@@ -218,12 +231,14 @@ def loadSS2500(filename=''):
     else:
         root = Tkinter.Tk()
         root.withdraw()
-        filename=askopenfilename(parent=root,title='Open File',filetypes=[('csv files','*.csv'),('txt files', '*.txt')])
+        filename = askopenfilename(parent=root, title='Open File',
+                                   filetypes=[('csv files','*.csv'),
+                                              ('txt files', '*.txt')])
         root.destroy()
         root.mainloop()
 
-    if(filename):
-        f=open(filename)
+    if filename is not None:
+        f = open(filename)
         
         names = f.readline() #variable names
         names = names.strip('\r\n')
@@ -233,34 +248,34 @@ def loadSS2500(filename=''):
         print('removing \'' + names.pop(0) + '\' from names list\n')
         print('removing \'' + names.pop(0) + '\' from names list\n')
 
-        cols=np.arange(2,len(names))
-        data = np.genfromtxt(filename,delimiter='\t',unpack=True,skip_header=1,usecols=cols)
-        timestrings = np.genfromtxt(filename,delimiter='\t',unpack=True,skip_header=1,usecols=[1],dtype=str)
+        cols=np.arange(2, len(names))
+        data = np.genfromtxt(filename, delimiter='\t', unpack=True,
+                             skip_header=1, usecols=cols)
+        timestrings = np.genfromtxt(filename, delimiter='\t',
+                                    unpack=True, skip_header=1,
+                                    usecols=[1], dtype=str)
         time = np.zeros(len(timestrings))
 
         for i in range(len(timestrings)):
             s = StringIO(timestrings[i])
-            timedata = np.genfromtxt(s,dtype=[int,int,float],delimiter=":")
-            (hours,minutes,seconds) = timedata.item()
-            time[i] = 3600.*hours + 60.*minutes + seconds
+            timedata = np.genfromtxt(s, dtype=[int, int, float], delimiter=":")
+            (hours, minutes, seconds) = timedata.item()
+            time[i] = 3600. * hours + 60. * minutes + seconds
 
         PBT = names.index('Part Bed Temp.')
         PBDC = names.index('Part Bed  Duty Cycle')
 
         figure()
         subplot(211)
-        #title(filename)
-        plot(time,data[PBT],label=names[PBT])
+        plot(time, data[PBT], label=names[PBT])
         ylabel(names[PBT] + r'$ \left(^{\circ}C\right)$')
 
         subplot(212)
-        plot(time,data[PBDC],label=names[PBDC])
+        plot(time, data[PBDC], label=names[PBDC])
         xlabel('Time(s)')
         ylabel(names[PBDC] + r'$ \left( \% \right) $')
 
-        return data,time,names
-    else:
-        return
+        return data, time, names
     
 def PIDdata(time,temperature,setp):
     """
