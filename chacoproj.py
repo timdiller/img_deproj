@@ -108,7 +108,7 @@ class ChacoProj(HasTraits):
     recalc_button = Button()
     load_button = Button()
 
-    data_file = File(filter = ['csv'])
+    data_file = File(filter = ['csv','npz'])
     
     raw_plot=Instance(Plot)
     L_container = Instance(HPlotContainer)
@@ -240,7 +240,7 @@ class ChacoProj(HasTraits):
         Check for offset errors. Negative y coordinates cause divide
         by zero errors.
         """
-        #from matplotlib.mlab import griddata
+        #from matplotlib.mlab import griddata 1
         self.x_clip = self.x_raw[self.trim_ymin:self.trim_ymax,
                                  self.trim_xmin:self.trim_xmax]
         self.y_clip = self.y_raw[self.trim_ymin:self.trim_ymax,
