@@ -252,9 +252,9 @@ class ChacoProj(HasTraits):
             inv = (1-2*self.inv)
             if inv*self.shift_y < max(self.y_clip[:,0]):
                 self.shift_y = inv*max(self.y_clip[:,0])
-        else:
+        #else:
             #if self.shift_y >  min(self.y_clip[:,0]):
-            self.shift_y = min(self.y_clip[:,0])
+            #self.shift_y = min(self.y_clip[:,0])
 
     def calc_dimensions(self):
         """
@@ -281,9 +281,22 @@ class ChacoProj(HasTraits):
             self.shift_y = self.trim_ymin
 
     def _load_button_fired(self):
-        f=open(self.data_file)
-        d=np.genfromtxt(f,delimiter=',')
-        self.z_raw = d
+        from os.path import splitext
+
+        def npz_open():
+            npz = np.load(self.data_file)
+            if len(npz.files) > 1:
+                print "Using first saved array in '" + self.data_file + "'"
+            return npz[npz.files[0]]
+            
+        def csv_open():
+            f=open(self.data_file)
+            return(np.genfromtxt(f,delimiter=','))
+
+        fileopen = {'.npz':npz_open,
+                    '.csv':csv_open,
+                    }
+        self.z_raw = fileopen[splitext(self.data_file)[1]]()
         self.calc_dimensions()
         self.generic_init()
 
