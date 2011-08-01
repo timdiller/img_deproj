@@ -1,9 +1,13 @@
-from traits.api import * 
-from traitsui.api import * #View,Group,Item
+from traits.api \
+    import Bool, Button, Enum, File, Float, HasTraits, Instance, \
+    Int
+from traitsui.api \
+    import View, Group, Item
 from traitsui.menu import OKButton,CancelButton
 from chaco.api import * #Plot, ArrayPlotData, jet
-from enable.api import *
-from chaco.tools.api import *
+from enable.api \
+    import Container, ComponentEditor
+#from chaco.tools.api import *
 import numpy as np
 import wx
 import matplotlib as mpl
@@ -111,7 +115,7 @@ class ChacoProj(HasTraits):
     data_file = File(filter = ['csv','npz'])
     
     raw_plot = Instance(Plot)
-    L_container = Instance(HPlotContainer)
+    L_container = Instance(Container)
     figure = Instance(Figure, ())
     
     view1 = View(
