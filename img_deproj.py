@@ -4,7 +4,8 @@ from traits.api \
 from traitsui.api \
     import View, Group, Item
 from traitsui.menu import OKButton,CancelButton
-from chaco.api import * #Plot, ArrayPlotData, jet
+from chaco.api import \
+    ArrayPlotData, HPlotContainer, jet, Plot #* #Plot, ArrayPlotData, jet
 from enable.api \
     import Container, ComponentEditor
 #from chaco.tools.api import *
@@ -57,7 +58,7 @@ class MPLFigureEditor(BasicEditorFactory):
     klass = _MPLFigureEditor
 
 
-class ChacoProj(HasTraits):
+class Image_Deproject(HasTraits):
     """ Projections using interactive Chaco session
     Coded by Tim Diller from Dec 2010 - Mar 2011
     Version history --------------------------------------------------
@@ -116,7 +117,8 @@ class ChacoProj(HasTraits):
     
     raw_plot = Instance(Plot)
     L_container = Instance(Container)
-    figure = Instance(Figure, ())
+    R_container = Instance(Container)
+    #figure = Instance(Figure, ())
     
     view1 = View(
         Group(
@@ -148,11 +150,15 @@ class ChacoProj(HasTraits):
                         orientation="horizontal"),
                     orientation="vertical",label='Raw Data'),#Raw Data grouping
                 Group(
-                    Item('figure',
-                         editor=MPLFigureEditor(),
+                    Item('R_container',
+                         editor=ComponentEditor(),
                          width=400,
-                         height=400,
                          show_label=False),
+                    ## Item('figure',
+                    ##      editor=MPLFigureEditor(),
+                    ##      width=400,
+                    ##      height=400,
+                    ##      show_label=False),
                     Group(
                         Item(name='keyst_x'),
                         Item(name='keyst_y'),
@@ -210,23 +216,22 @@ class ChacoProj(HasTraits):
         ## self.z_raw  = npz[npz.files[0]]
         ## self.pd.set_data('z_trans',self.z_trans)
 
-        x = np.linspace(-np.pi,np.pi,100)
-        y = np.linspace(-np.pi/2.,3.*np.pi/2.,100)
-        [X,Y] = np.meshgrid(x,y)
-        self.z_raw = np.sin(X)*np.cos(Y)
+        x = np.linspace(-np.pi, np.pi, 100)
+        y = np.linspace(-np.pi / 2., 3. * np.pi / 2., 100)
+        [X,Y] = np.meshgrid(x, y)
+        self.z_raw = np.sin(X) * np.cos(Y)
         self.x_raw = X
         self.y_raw = Y
-        self.trim_xmax=self.z_raw.shape[1]
-        self.trim_ymax=self.z_raw.shape[0]
+        self.trim_xmax = self.z_raw.shape[1]
+        self.trim_ymax = self.z_raw.shape[0]
 
         self.pd = ArrayPlotData()
         self.generic_init()
         
         lplot = Plot(self.pd)
-        lplot.contour_plot(
-            'z_raw',
-            xbounds = (min(self.x_raw[0]),  max(self.x_raw[0])),
-            ybounds = (min(self.y_raw[:,0]),max(self.y_raw[:,0])),
+        lplot.contour_plot('z_raw',
+            xbounds=(min(self.x_raw[0]),  max(self.x_raw[0])),
+            ybounds=(min(self.y_raw[:,0]), max(self.y_raw[:,0])),
             name="left_plot",
             type="poly",
             levels=128)
@@ -236,7 +241,7 @@ class ChacoProj(HasTraits):
         lcont.add(lplot)
         self.L_container = lcont
         
-        self.axes = self.figure.add_subplot(111)
+        #self.axes = self.figure.add_subplot(111)
 
     def clip_data(self):
         """
@@ -329,17 +334,17 @@ class ChacoProj(HasTraits):
 #        from numpy import savez
         offset={'K':-273.,'C':0.}
 
-        T = ctfp(inv = (1-2*self.inv),
-                 theta = self.theta,
-                 kx = self.keyst_x, ky = self.keyst_y,
-                 sx = self.scale_x, sy = self.scale_y,
-                 tx = self.shift_x, ty = self.shift_y)
+        T = ctfp(inv=(1 - 2 * self.inv),
+                 theta=self.theta,
+                 kx=self.keyst_x, ky=self.keyst_y,
+                 sx=self.scale_x, sy=self.scale_y,
+                 tx=self.shift_x, ty=self.shift_y)
 
-        xy1=np.asarray([np.resize(self.x_clip,np.size(self.x_clip)),
-                        np.resize(self.y_clip,np.size(self.y_clip)),
+        xy1=np.asarray([np.resize(self.x_clip, np.size(self.x_clip)),
+                        np.resize(self.y_clip, np.size(self.y_clip)),
                         np.ones(np.size(self.x_clip))])
 
-        U=np.dot(xy1.T,T)
+        U=np.dot(xy1.T, T)
 
         del xy1
 
@@ -361,8 +366,10 @@ class ChacoProj(HasTraits):
         del x2,y2#,z2
 
 #        savez('tempsave.npz',x=x,y=y,z=z,x_t=x_t,y_t=y_t,T=self.T)
-
     def replot(self):
+        replot_mpl(self)
+
+    def replot_mpl(self):
         """
         Any time there is an update to the transformed data, update
         the contour plot in the right-hand container.
@@ -408,5 +415,5 @@ class ChacoProj(HasTraits):
         self.configure_traits()
 
 
-f=ChacoProj()
+f = Image_Deproject()
 f.start()
