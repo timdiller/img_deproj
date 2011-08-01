@@ -87,17 +87,17 @@ class ChacoProj(HasTraits):
     """
     ## UI elements
     inv = Bool(True)
-    units = Enum('K','C',desc = 'units of original data')
-    theta = Float(0.0,desc='degrees')
-    gridsize = Int(20,desc='pixel size of recalculated image')
-    trim_xmin = Int(0, desc = 'pixel position of left edge of raw image')
-    trim_xmax = Int(10,desc = 'pixel position of right edge of raw image')
-    trim_ymin = Int(0, desc = 'pixel position of bottom edge of raw image')
-    trim_ymax = Int(10,desc = 'pixel position of top edge of raw image')
-    shift_x = Float(0,desc = 'location of center in raw data units')
-    shift_y = Float(0,desc = 'location of image bottom in raw data units')
-    keyst_x = Float(0.0, desc = ' typical value is 0')
-    keyst_y = Float(0.0, desc = 'keystone correction. typical value is -0.01')
+    units = Enum('K', 'C',desc = 'units of original data')
+    theta = Float(0.0, desc='degrees')
+    gridsize = Int(20, desc='pixel size of recalculated image')
+    trim_xmin = Int(0, desc='pixel position of left edge of raw image')
+    trim_xmax = Int(10, desc='pixel position of right edge of raw image')
+    trim_ymin = Int(0, desc='pixel position of bottom edge of raw image')
+    trim_ymax = Int(10, desc='pixel position of top edge of raw image')
+    shift_x = Float(0, desc='location of center in raw data units')
+    shift_y = Float(0, desc='location of image bottom in raw data units')
+    keyst_x = Float(0.0, desc='typical value is 0')
+    keyst_y = Float(0.0, desc='keystone correction. typical value is -0.01')
     scale_x = Float(1.)
     scale_y = Float(1.)
     ax_xmin = Float(-150.)
@@ -110,7 +110,7 @@ class ChacoProj(HasTraits):
 
     data_file = File(filter = ['csv','npz'])
     
-    raw_plot=Instance(Plot)
+    raw_plot = Instance(Plot)
     L_container = Instance(HPlotContainer)
     figure = Instance(Figure, ())
     
@@ -119,36 +119,36 @@ class ChacoProj(HasTraits):
             Group(
                 Group(
                     Item('L_container',
-                         editor = ComponentEditor(),
-                         width = 400,
-                         show_label = False),
+                         editor=ComponentEditor(),
+                         width=400,
+                         show_label=False),
                     Group(
-                        Item(name = 'trim_xmin',label = 'min'),
-                        Item(name = 'trim_xmax',label = 'max'),
-                        orientation = "horizontal",
-                        label = 'X Clipping'),
+                        Item(name='trim_xmin', label='min'),
+                        Item(name='trim_xmax', label='max'),
+                        orientation="horizontal",
+                        label='X Clipping'),
                     Group(
-                        Item(name = 'trim_ymin',label = 'min'),
-                        Item(name = 'trim_ymax',label = 'max'),
-                        orientation = "horizontal",
-                        label = 'Y Clipping'),
+                        Item(name='trim_ymin', label='min'),
+                        Item(name='trim_ymax', label='max'),
+                        orientation="horizontal",
+                        label='Y Clipping'),
                     Group(
-                        Item(name='shift_x',label='X'),
-                        Item(name='shift_y',label='Y'),
-                        label = "Offset",
-                        orientation = "horizontal"),
+                        Item(name='shift_x', label='X'),
+                        Item(name='shift_y', label='Y'),
+                        label="Offset",
+                        orientation="horizontal"),
                     Group(
-                        Item(name = 'inv'),
-                        Item(name = 'theta'),
-                        Item('units',label = 'Units'),
-                        orientation = "horizontal"),
+                        Item(name='inv'),
+                        Item(name='theta'),
+                        Item('units', label='Units'),
+                        orientation="horizontal"),
                     orientation="vertical",label='Raw Data'),#Raw Data grouping
                 Group(
                     Item('figure',
-                         editor = MPLFigureEditor(),
-                         width = 400,
-                         height = 400,
-                         show_label = False),
+                         editor=MPLFigureEditor(),
+                         width=400,
+                         height=400,
+                         show_label=False),
                     Group(
                         Item(name='keyst_x'),
                         Item(name='keyst_y'),
@@ -156,18 +156,18 @@ class ChacoProj(HasTraits):
                     Group(
                         Item(name='scale_x'),
                         Item(name='scale_y'),
-                        orientation = "horizontal"),
+                        orientation="horizontal"),
                     Group(
                         Group(
-                            Item(name = 'ax_xmin',label = 'x-',format_str="%.1f"),
-                            Item(name = 'ax_xmax',label = 'x+',format_str="%.1f"),
-                            orientation = "vertical"),
+                            Item(name='ax_xmin', label='x-', format_str="%.1f"),
+                            Item(name='ax_xmax', label='x+', format_str="%.1f"),
+                            orientation="vertical"),
                         Group(
-                            Item(name = 'ax_ymin',label = 'y-',format_str="%.1f"),
-                            Item(name = 'ax_ymax',label = 'y+',format_str="%.1f"),
-                            orientation = "vertical"),
-                        orientation = "horizontal",
-                        label = 'Axis'),
+                            Item(name='ax_ymin', label='y-', format_str="%.1f"),
+                            Item(name='ax_ymax', label='y+', format_str="%.1f"),
+                            orientation="vertical"),
+                        orientation="horizontal",
+                        label='Axis'),
                     orientation="vertical",
                     label='Final Data'),
                 orientation="horizontal"),
