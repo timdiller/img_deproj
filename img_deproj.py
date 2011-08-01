@@ -200,29 +200,27 @@ class ChacoProj(HasTraits):
         save file.
 
         axes are added to the figure here under the handle self.axes.
-        
         """
         ## npz=np.load('savefile.npz')
         ## self.z_raw  = npz[npz.files[0]]
         ## self.pd.set_data('z_trans',self.z_trans)
 
-        x = np.linspace(-np.pi,np.pi,100)
-        y = np.linspace(-np.pi/2.,3.*np.pi/2.,100)
-        [X,Y] = np.meshgrid(x,y)
-        self.z_raw = np.sin(X)*np.cos(Y)
+        x = np.linspace(-np.pi, np.pi, 100)
+        y = np.linspace(-np.pi / 2., 3. * np.pi / 2., 100)
+        [X,Y] = np.meshgrid(x, y)
+        self.z_raw = np.sin(X) * np.cos(Y)
         self.x_raw = X
         self.y_raw = Y
-        self.trim_xmax=self.z_raw.shape[1]
-        self.trim_ymax=self.z_raw.shape[0]
+        self.trim_xmax = self.z_raw.shape[1]
+        self.trim_ymax = self.z_raw.shape[0]
 
         self.pd = ArrayPlotData()
         self.generic_init()
         
         lplot = Plot(self.pd)
-        lplot.contour_plot(
-            'z_raw',
+        lplot.contour_plot('z_raw',
             xbounds = (min(self.x_raw[0]),  max(self.x_raw[0])),
-            ybounds = (min(self.y_raw[:,0]),max(self.y_raw[:,0])),
+            ybounds = (min(self.y_raw[:,0]), max(self.y_raw[:,0])),
             name="left_plot",
             type="poly",
             levels=128)
@@ -263,12 +261,12 @@ class ChacoProj(HasTraits):
         initialization and when a new raw data file is loaded.
         sets x_raw and y_raw based on the dimension of z_raw
         """
-        xdim=self.z_raw.shape[1]
-        self.trim_xmax=xdim
-        ydim=self.z_raw.shape[0]
-        self.trim_ymax=ydim
-        xs=np.arange(float(xdim))#/float(xdim) #these are the x's
-        ys=np.arange(float(ydim))#/float(ydim) #these are the y's
+        xdim = self.z_raw.shape[1]
+        self.trim_xmax = xdim
+        ydim = self.z_raw.shape[0]
+        self.trim_ymax = ydim
+        xs = np.arange(float(xdim))#/float(xdim) #these are the x's
+        ys = np.arange(float(ydim))#/float(ydim) #these are the y's
         x, y = np.meshgrid(xs,ys)
 
         self.x_raw = x
@@ -276,7 +274,7 @@ class ChacoProj(HasTraits):
 
     def _inv_changed(self):
         if self.inv:
-            self.shift_y = -1*self.trim_ymax
+            self.shift_y = -1 * self.trim_ymax
         else:
             self.shift_y = self.trim_ymin
 
@@ -294,8 +292,7 @@ class ChacoProj(HasTraits):
             return(np.genfromtxt(f,delimiter=','))
 
         fileopen = {'.npz':npz_open,
-                    '.csv':csv_open,
-                    }
+                    '.csv':csv_open,}
         self.z_raw = fileopen[splitext(self.data_file)[1]]()
         self.calc_dimensions()
         self.generic_init()
