@@ -112,7 +112,8 @@ class ChacoProj(HasTraits):
     recalc_button = Button()
     load_button = Button()
 
-    data_file = File(filter = ['csv','npz'])
+    #data_file = File(filter = ['csv','npz'])
+    data_file = File()
     
     raw_plot = Instance(Plot)
     L_container = Instance(Container)
