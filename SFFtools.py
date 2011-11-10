@@ -147,7 +147,7 @@ def loadXLcsv():
     if filename is not None:
         f=open(filename)
 
-    if is not None:
+    if f is not None:
         l = f.read() #because there are no \n's this will read the whole file.
         f.close()
         s = StringIO(l.replace('\r','\n'))#write the string into a virtual file
