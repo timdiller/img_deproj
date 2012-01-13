@@ -367,7 +367,7 @@ class Image_Deproject(HasTraits):
 
 #        savez('tempsave.npz',x=x,y=y,z=z,x_t=x_t,y_t=y_t,T=self.T)
     def replot(self):
-        replot_mpl(self)
+        self.replot_mpl()
 
     def replot_mpl(self):
         """
